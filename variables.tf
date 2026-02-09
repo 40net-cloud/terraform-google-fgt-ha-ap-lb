@@ -84,12 +84,14 @@ variable "fgt_config" {
 
 variable "logdisk_size" {
   type        = number
-  description = "Size of the attached logdisk in GB"
+  description = "Size of the attached logdisk in GB. Set to \"0\" (zero) to not attach any."
   default     = 30
-  validation {
-    condition     = var.logdisk_size > 10
-    error_message = "Log disk size cannot be smaller than 10GB."
-  }
+}
+
+variable "logdisk_type" {
+  type        = string
+  default     = "pd-ssd"
+  description = "Type of disk to use for FortiGate VMs. Check machine type compatibility."
 }
 
 variable "image_family" {

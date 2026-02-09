@@ -95,11 +95,11 @@ resource "random_string" "ha_password" {
 
 # Create FortiGate instances with secondary logdisks and configuration. Everything 2 times (active + passive)
 resource "google_compute_disk" "logdisk" {
-  count = 2
+  count = var.logdisk_size > 0 ? 2 : 0
 
   name   = "${local.prefix}disk-logdisk${count.index + 1}-${local.zones_short[count.index]}"
   size   = var.logdisk_size
-  type   = "pd-ssd"
+  type   = var.logdisk_type
   zone   = local.zones[count.index]
   labels = var.labels
 }
@@ -199,8 +199,11 @@ resource "google_compute_instance" "fgt_vm" {
       labels = var.labels
     }
   }
-  attached_disk {
-    source = google_compute_disk.logdisk[count.index].name
+  dynamic "attached_disk" {
+    for_each = var.logdisk_size > 0 ? [1] : []
+    content {
+      source = google_compute_disk.logdisk[count.index].name
+    }
   }
 
   service_account {
