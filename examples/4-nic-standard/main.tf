@@ -17,13 +17,18 @@ module "fgt_ha" {
   // The module can create multiple public-facing frontends, simply list their names here
   frontends = ["app1", "app2"]
 
-  // 4-NIC deployment requires a machine type with at least 3 vCPUs
-  machine_type = "n2-standard-4"
+  // 4-NIC deployment requires a machine type with at least 4 vCPUs
+  machine_type = "c4a-standard-4"
+
+  // C4A family is currently one of the most performant ones, but it requires specific NIC and disk types
+  // Check the disk and NIC types supported by your machine type family before deployment
+  nic_type     = "GVNIC"
+  logdisk_type = "hyperdisk-balanced"
 
   // Use licensing type (byol or payg) and firmware version to indicate which image you want 
   // to deploy. See docs/images.md for more details on this section
   image = {
-    version = "7.6.1"
+    version = "7.6.6"
     license = "byol"
   }
 
@@ -32,6 +37,7 @@ module "fgt_ha" {
   license_files = ["dummy_lic1.lic", "dummy_lic2.lic"]
 
   // Service account to be bound to the FortiGate VMs. If omitted defaults to Default Compute Service Account
+  // Mind that using the default account is against CIS benchmarks
   service_account = "fortigatesdn-ro@${var.project_id}.iam.gserviceaccount.com"
 
   // Add any custom labels to indicate the resources deployed by this module
