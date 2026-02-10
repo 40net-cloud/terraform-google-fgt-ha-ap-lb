@@ -30,6 +30,7 @@ module "fgt_ha" {
   image = {
     version = "7.6.6"
     license = "byol"
+    arch    = "arm"
   }
 
   // If using standard BYOL licenses indicate the license files here. Skip this argument for
