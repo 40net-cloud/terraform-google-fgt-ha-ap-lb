@@ -20,9 +20,8 @@ module "fgt_ha" {
   // 4-NIC deployment requires a machine type with at least 4 vCPUs
   machine_type = "c4a-standard-4"
 
-  // C4A family is currently one of the most performant ones, but it requires specific NIC and disk types
+  // C4A family is currently one of the most performant ones, but it requires non-default disk type
   // Check the disk and NIC types supported by your machine type family before deployment
-  nic_type     = "GVNIC"
   logdisk_type = "hyperdisk-balanced"
 
   // Use licensing type (byol or payg) and firmware version to indicate which image you want 
