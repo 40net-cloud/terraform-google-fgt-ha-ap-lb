@@ -68,11 +68,11 @@ resource "google_compute_region_backend_service" "elb_bes" {
   protocol              = "UNSPECIFIED"
 
   backend {
-    group = google_compute_instance_group.fgt_umigs[0].self_link
+    group          = google_compute_instance_group.fgt_umigs[0].self_link
     balancing_mode = "CONNECTION"
   }
   backend {
-    group = google_compute_instance_group.fgt_umigs[1].self_link
+    group          = google_compute_instance_group.fgt_umigs[1].self_link
     balancing_mode = "CONNECTION"
   }
 
