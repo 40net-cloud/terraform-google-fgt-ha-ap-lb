@@ -50,7 +50,7 @@ resource "google_compute_forwarding_rule" "ilb" {
 resource "google_compute_route" "outbound_routes" {
   for_each = toset([for pair in setproduct(keys(local.ports_internal), keys(var.routes)) : join("|", pair)])
 
-  name         = "${local.prefix}rt-${data.google_compute_subnetwork.connected[split("|", each.key)[0]].name}-${split("|", each.key)[1]}-via-fgt"
+  name         = "${local.prefix}rt-${trimprefix(data.google_compute_subnetwork.connected[split("|", each.key)[0]].name, local.prefix)}-${split("|", each.key)[1]}-via-fgt"
   dest_range   = var.routes[split("|", each.key)[1]]
   network      = data.google_compute_subnetwork.connected[split("|", each.key)[0]].network
   next_hop_ilb = google_compute_forwarding_rule.ilb[split("|", each.key)[0]].self_link

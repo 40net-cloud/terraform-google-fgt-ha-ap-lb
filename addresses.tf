@@ -16,7 +16,7 @@ resource "google_compute_address" "priv" {
     [0, 1]
   ) : join("-", pair)])
 
-  name         = "${local.prefix}addrprv-${each.value}"
+  name         = "${local.prefix}addrprv-${trimprefix(each.value, local.prefix)}"
   region       = local.region
   address_type = "INTERNAL"
   subnetwork   = data.google_compute_subnetwork.connected[split("-", each.key)[0]].id
