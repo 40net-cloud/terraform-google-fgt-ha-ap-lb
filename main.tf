@@ -105,7 +105,7 @@ resource "google_compute_disk" "logdisk" {
 
   lifecycle {
     precondition {
-      condition     = anytrue([local.supported.disk_types == null, contains(local.supported.disk_types, var.logdisk_type)])
+      condition     = try(contains(local.supported.disk_types, var.logdisk_type), local.supported.disk_types == null)
       error_message = "Machine type ${var.machine_type} does not support disk type ${var.logdisk_type}. Change either machine_type or logdisk_type in module input variables."
     }
   }
@@ -245,10 +245,6 @@ resource "google_compute_instance" "fgt_vm" {
     precondition {
       condition     = !(("${try(var.license_files[0], "")}${try(var.flex_tokens[0], "")}" != "") && strcontains(try(module.fgtimage[0].image.name, ""), "ondemand"))
       error_message = "You provided a FortiGate BYOL (or Flex) license, but you're attempting to deploy a PAYG image. This would result in a double license fee. \nUpdate module's 'image' parameter to fix this error.\n\nCurrent var.image value: \n  {%{for k, v in var.image}%{if tostring(v) != ""}\n    ${k}=${v}%{endif}%{endfor}\n  }"
-    }
-    precondition {
-      condition     = anytrue([local.supported.nic_types == null, contains(local.supported.nic_types, var.nic_type)])
-      error_message = "Machine type ${var.machine_type} does not support NIC type ${var.nic_type}. Change either machine_type or nic_type in module input variables."
     }
   }
 } //fgt-vm

@@ -25,6 +25,10 @@ locals {
       nic_types  = ["GVNIC"]
       disk_types = ["hyperdisk-balanced", "hyperdisk-balanced-high-availability", "hyperdisk-throughput", "hyperdisk-extreme"]
     }
+    "t2a" = {
+      nic_types  = ["GVNIC"]
+      disk_types = ["pd-standard", "pd-balanced", "pd-ssd"]
+    }
   }
   supported = try(local.supported_list[local.vm_family], { "nic_types" = null, "disk_types" = null })
 }
