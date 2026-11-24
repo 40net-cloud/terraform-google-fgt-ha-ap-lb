@@ -234,3 +234,17 @@ variable "ports_external" {
   description = "List of ports treated as external. By default [port1]"
   default     = ["port1"]
 }
+
+variable "ports" {
+  type = map(object({
+    vlan        = optional(number, null)
+    subnet_id   = optional(string, null)
+    subnet_name = optional(string, null)
+    address     = optional(string, null)
+  }))
+
+  default = {
+    port1 = {}
+    port2 = {}
+  }
+}

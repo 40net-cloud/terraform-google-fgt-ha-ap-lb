@@ -1,5 +1,5 @@
 output "fgt_mgmt_eips" {
-  value       = [for eip in google_compute_address.pub : eip.address ]
+  value       = [for eip in google_compute_address.pub : eip.address]
   description = "Public management IP addresses of FortiGate VMs"
 }
 
@@ -36,7 +36,7 @@ output "ilb_addresses" {
 
 output "ilb_ids" {
   value       = { for indx, ilb in google_compute_forwarding_rule.ilb : indx => ilb.id }
-  description = "Address of ILB. Can be used for route creation"  
+  description = "Address of ILB. Can be used for route creation"
 }
 
 output "frontends" {
@@ -45,16 +45,20 @@ output "frontends" {
 }
 
 output "fgts" {
-  value = [for vm in google_compute_instance.fgt_vm: {
-    name = vm.name
-    self_link = vm.self_link
-    id = vm.id
-    instance_id = vm.instance_id
-    zone = vm.zone
-    boot_disk = { initialize_params = [vm.boot_disk[0].initialize_params]}
-    network_interface = [ for nic_indx in range(length(var.subnets)) : vm.network_interface[ nic_indx ]]
-    ports = { for nic_indx in range(length(var.subnets)) : "port${nic_indx+1}"=>vm.network_interface[ nic_indx ]}
-    service_account = vm.service_account
+  value = [for vm in google_compute_instance.fgt_vm : {
+    name              = vm.name
+    self_link         = vm.self_link
+    id                = vm.id
+    instance_id       = vm.instance_id
+    zone              = vm.zone
+    boot_disk         = { initialize_params = [vm.boot_disk[0].initialize_params] }
+    network_interface = [for nic_indx in range(length(var.subnets)) : vm.network_interface[nic_indx]]
+    ports             = { for nic_indx in range(length(var.subnets)) : "port${nic_indx + 1}" => vm.network_interface[nic_indx] }
+    service_account   = vm.service_account
   }]
   description = "FortiGate VM instance objects (partial)"
+}
+
+output "ports" {
+  value = var.ports
 }

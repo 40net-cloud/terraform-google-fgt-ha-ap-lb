@@ -132,7 +132,7 @@ data "cloudinit_config" "fgt" {
   part {
     filename     = "config"
     content_type = "text/plain; charset=\"us-ascii\""
-    content = templatefile("${path.module}/fgt-base-config.tftpl", {
+    content = templatefile("${path.module}/fgt-base-vlan.tftpl", {
       hostname             = "${local.prefix}vm-fgt${count.index + 1}-${local.zones_short[count.index]}"
       healthcheck_port     = var.healthcheck_port
       api_acl              = var.api_acl
@@ -230,8 +230,10 @@ resource "google_compute_instance" "fgt_vm" {
 
     content {
       subnetwork = data.google_compute_subnetwork.connected[network_interface.value].self_link
-      nic_type   = local.nic_type
+      nic_type   = try(var.ports[network_interface.value].vlan, null) == null ? local.nic_type : null
       network_ip = google_compute_address.priv["${network_interface.value}-${count.index}"].address
+      vlan       = try(var.ports[network_interface.value].vlan, null)
+      # parent_nic_name - missing from current version of provider, so always set to nic0
       dynamic "access_config" {
         for_each = contains(local.public_nics, network_interface.value) ? [1] : []
         content {
