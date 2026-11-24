@@ -8,7 +8,7 @@ Google Cloud offers machine types based on Intel, AMD and ARM processors. ARM ar
 
 Deploying an ARM-based instance requires
 - boot image supporting ARM architecture
-- machine type from T2A family
+- machine type from T2A, C4A or other ARM-based family
 - using GVNIC network driver (VIRTIO is not supported by T2A machine type family)
 
 Above requirements can be configured by passing the following variables to the module:
